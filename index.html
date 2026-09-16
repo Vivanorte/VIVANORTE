@@ -189,7 +189,7 @@
         Tu próxima propiedad está a un filtro de distancia
       </h1>
       <p class="rise-in rise-in-2 text-brand-100 text-base sm:text-lg mt-4 max-w-xl">
-        Casas, apartamentos y terrenos en venta y renta, verificados por nuestro equipo de agentes.
+        s, apartamentos y terrenos en venta y renta, verificados por nuestro equipo de agentes.
       </p>
     </div>
 
@@ -275,6 +275,7 @@
               <option value="apartamento">Apartamento</option>
               <option value="terreno">Terreno</option>
               <option value="local">Local comercial</option>
+              <option value="Bodega">Bodega</option>
             </select>
           </div>
           <div>
@@ -962,7 +963,7 @@ https://ejemplo.com/foto2.jpg" class="w-full px-3 py-2.5 rounded-lg border borde
     return `Q${n}${prop.operation === "renta" ? " /mes" : ""}`;
   }
 
-  const TYPE_LABEL = { casa: "Casa", apartamento: "Apartamento", terreno: "Terreno", local: "Local comercial" };
+  const TYPE_LABEL = { casa: "Casa", apartamento: "Apartamento", terreno: "Terreno", local: "Local comercial", Bodega: "Bodega" };
 
   function showToast(message, icon) {
     const el = document.createElement("div");
