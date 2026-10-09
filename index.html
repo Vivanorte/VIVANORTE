@@ -726,6 +726,19 @@ https://ejemplo.com/foto2.jpg" class="w-full px-3 py-2.5 rounded-lg border borde
     phoneNumber: "30298181",
     leadsSyncUrl: "https://script.google.com/macros/s/AKfycbw068olFvmAjftGmSNnDiS_oqhmjceT4l8ZgEn8-vUla7Ju8y55VMJQEj91AIhCVmC_gw/exec",
     currency: "GTQ",
+
+    // ---------------------------------------------------------------
+    // AGENTES — usa el MISMO correo con el que cada agente inicia sesión.
+    // phone: número de 8 dígitos (para WhatsApp se agrega el 502 automáticamente)
+    // ---------------------------------------------------------------
+    agents: {
+      "agente1@vivanorte.com": { name: "Nombre Agente 1", phone: "5555-1111" },
+      "agente2@vivanorte.com": { name: "Nombre Agente 2", phone: "5555-2222" },
+      "agente3@vivanorte.com": { name: "Nombre Agente 3", phone: "5555-3333" },
+      // Usuario del modo demostración (solo si Firebase no está activo)
+      "agente": { name: "Agente Demo", phone: "3029-8181" }
+    },
+
     demoCredentials: { user: "agente", pass: "vivanorte2026" },
     firebase: {
       apiKey: "AIzaSyAPrESEI7AuBhZBkc2CUJ_fpiJ2SxvbUz4",
@@ -1391,7 +1404,20 @@ https://ejemplo.com/foto2.jpg" class="w-full px-3 py-2.5 rounded-lg border borde
   /* ---------------------------------------------------------
      PANEL: LISTA PRIVADA
   --------------------------------------------------------- */
+  function getCurrentAgent() {
+    const email = (state.currentUserEmail || "").toLowerCase().trim();
+    const key = Object.keys(CONFIG.agents || {}).find(k => k.toLowerCase() === email);
+    if (key) {
+      const a = CONFIG.agents[key];
+      const digits = String(a.phone).replace(/\D/g, "");
+      return { name: a.name || "", phone: a.phone, wa: "502" + digits.slice(-8) };
+    }
+    // Si el correo no está en la lista, usa el número general de la empresa
+    return { name: "", phone: "3029-8181", wa: CONFIG.whatsappNumber };
+  }
+
   function buildCopyText(p) {
+    const agent = getCurrentAgent();
     return `🏠 *${p.title}*
 📍 ${p.zone}
 💰 ${formatPrice(p)} (${p.operation === "venta" ? "Venta" : "Renta"})
@@ -1404,7 +1430,8 @@ ${(p.tags || []).map(t => "✔ " + t).join("\n")}
 🔗 ${getPropertyShareUrl(p.id)}
 
 Contáctanos: VIVANORTE
-📞 3029-8181`;
+${agent.name ? "👤 Asesor: " + agent.name + "\n" : ""}📞 ${agent.phone}
+💬 https://wa.me/${agent.wa}`;
   }
 
   function panelPropertyRow(p) {
@@ -1788,6 +1815,7 @@ Contáctanos: VIVANORTE
         }
       });
     } else if (state.session) {
+      state.currentUserEmail = CONFIG.demoCredentials.user;
       $("#panel-username").textContent = CONFIG.demoCredentials.user;
       enterPanel();
     }
