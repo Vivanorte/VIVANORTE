@@ -314,7 +314,7 @@
 
       <div class="bg-gray-50 border border-gray-100 p-5 rounded-2xl flex flex-col items-center text-center shadow-sm">
         <div class="mb-4">
-          <p class="text-gray-900 font-bold text-lg">Velvet González</p>
+          <p class="text-gray-900 font-bold text-lg">"Velvet González""</p>
           <p class="text-gray-500 text-sm">Asesora Inmobiliaria</p>
         </div>
         <div class="flex gap-3 w-full">
@@ -329,7 +329,7 @@
 
       <div class="bg-gray-50 border border-gray-100 p-5 rounded-2xl flex flex-col items-center text-center shadow-sm">
         <div class="mb-4">
-          <p class="text-gray-900 font-bold text-lg">Carlos Barrera</p>
+          <p class="text-gray-900 font-bold text-lg">"Carlos Barrera"</p>
           <p class="text-gray-500 text-sm">Asesor Inmobiliario</p>
         </div>
         <div class="flex gap-3 w-full">
@@ -517,7 +517,7 @@
           <i data-lucide="plus-circle" class="w-4 h-4"></i> Nueva propiedad
         </button>
         <button data-panel-tab="leads" class="panel-tab flex items-center gap-2 px-4 md:px-4 py-3 text-sm font-medium rounded-lg whitespace-nowrap">
-          <i data-lucide="inbox" class="w-4 h-4"></i> Leads
+          <i data-lucide="file-text" class="w-4 h-4"></i> Solicitudes de renta
         </button>
       </nav>
       <div class="p-3 md:mt-auto flex items-center">
@@ -656,30 +656,40 @@ https://ejemplo.com/foto2.jpg" class="w-full px-3 py-2.5 rounded-lg border borde
           </div>
         </section>
 
-        <!-- TAB: Leads -->
+        <!-- TAB: Solicitudes de renta -->
         <section data-panel-section="leads" class="panel-section hidden">
           <div class="bg-white border border-gray-200 rounded-2xl p-5 sm:p-7 mb-6">
             <div class="flex items-start justify-between flex-wrap gap-3 mb-4">
               <div>
                 <h2 class="font-display font-bold text-navy-900">Solicitudes de arrendamiento</h2>
-                <p class="text-sm text-gray-500 mt-1">Respuestas del formulario, listas para revisar antes de generar el contrato.</p>
+                <p class="text-sm text-gray-500 mt-1">Respuestas del Google Form, listas para armar el contrato.</p>
               </div>
               <button id="btn-sync-leads" class="inline-flex items-center gap-2 text-sm font-semibold text-brand-500 border border-brand-200 hover:bg-brand-50 px-4 py-2 rounded-lg">
                 <i data-lucide="refresh-cw" class="w-4 h-4"></i> Sincronizar
               </button>
             </div>
-            <input id="leads-search" type="text" placeholder="Buscar por nombre, DPI o dirección..." class="w-full sm:w-80 px-3 py-2 rounded-lg border border-gray-200 text-sm outline-none focus:border-brand-400 mb-4">
+            <div class="flex flex-col sm:flex-row gap-3 mb-4">
+              <input id="leads-search" type="text" placeholder="Buscar por nombre, DPI, teléfono o dirección..." class="w-full sm:w-80 px-3 py-2 rounded-lg border border-gray-200 text-sm outline-none focus:border-brand-400">
+              <select id="leads-status-filter" class="px-3 py-2 rounded-lg border border-gray-200 text-sm outline-none focus:border-brand-400">
+                <option value="">Todos los estados</option>
+                <option value="nueva">Nueva</option>
+                <option value="revision">En revisión</option>
+                <option value="contrato">Contrato hecho</option>
+                <option value="descartada">Descartada</option>
+              </select>
+              <p class="text-sm text-gray-500 sm:ml-auto self-center"><span id="leads-count" class="font-semibold text-navy-900">0</span> solicitudes</p>
+            </div>
             <div id="leads-list" class="space-y-3"></div>
             <div id="leads-empty" class="hidden text-center py-10">
               <i data-lucide="inbox" class="w-8 h-8 text-gray-300 mx-auto mb-2"></i>
-              <p class="text-sm text-gray-500">Aún no hay solicitudes sincronizadas.</p>
+              <p class="text-sm text-gray-500">Aún no hay solicitudes. Pulsa "Sincronizar" para traer las respuestas del formulario.</p>
             </div>
           </div>
 
           <div class="bg-brand-50 border border-brand-100 rounded-2xl p-5 sm:p-7 text-sm text-navy-900">
             <h3 class="font-display font-semibold mb-2 flex items-center gap-2"><i data-lucide="link" class="w-4 h-4"></i> Sobre la sincronización</h3>
-            <p class="text-navy-700 mb-2">Este botón trae las respuestas más recientes de tu Google Form (a través del Web App de Apps Script) y las guarda en la base de datos privada de VIVANORTE, visible solo para agentes con sesión iniciada.</p>
-            <p class="text-navy-700">Importante: la URL del Web App de Google no pide inicio de sesión para poder leerse desde el sitio, así que trátala como una contraseña — no la compartas ni la publiques fuera de este archivo.</p>
+            <p class="text-navy-700 mb-2">"Sincronizar" trae las respuestas más recientes de tu Google Sheet (vía Apps Script) y las guarda en la base de datos privada de VIVANORTE. Las solicitudes ya sincronizadas conservan su estado.</p>
+            <p class="text-navy-700">Estos datos incluyen DPI y salarios: no compartas la URL del Web App ni el token fuera de este archivo.</p>
           </div>
         </section>
 
@@ -691,12 +701,31 @@ https://ejemplo.com/foto2.jpg" class="w-full px-3 py-2.5 rounded-lg border borde
 <!-- MODAL: DETALLE DE SOLICITUD (LEAD) -->
 <div id="modal-lead" class="hidden fixed inset-0 z-50 items-center justify-center p-3 sm:p-6">
   <div class="absolute inset-0 bg-navy-900/60" data-close-lead-modal></div>
-  <div class="relative bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto fade-scale-enter p-5 sm:p-7">
+  <div class="relative bg-white rounded-2xl w-full max-w-3xl max-h-[92vh] overflow-y-auto fade-scale-enter p-5 sm:p-7">
     <button data-close-lead-modal aria-label="Cerrar" class="absolute top-3 right-3 w-9 h-9 rounded-full bg-gray-50 hover:bg-gray-100 flex items-center justify-center">
       <i data-lucide="x" class="w-5 h-5 text-navy-900"></i>
     </button>
-    <h3 class="font-display text-lg font-bold text-navy-900 mb-1">Detalle de la solicitud</h3>
-    <p id="lead-modal-date" class="text-xs text-gray-400 mb-5"></p>
+    <h3 id="lead-modal-name" class="font-display text-lg font-bold text-navy-900 mb-1 pr-10">Detalle de la solicitud</h3>
+    <p id="lead-modal-date" class="text-xs text-gray-400 mb-4"></p>
+
+    <div class="flex flex-wrap items-center gap-2 mb-6 pb-5 border-b border-gray-100">
+      <select id="lead-status-select" class="px-3 py-2 rounded-lg border border-gray-200 text-xs font-semibold outline-none focus:border-brand-400">
+        <option value="nueva">Nueva</option>
+        <option value="revision">En revisión</option>
+        <option value="contrato">Contrato hecho</option>
+        <option value="descartada">Descartada</option>
+      </select>
+      <button id="lead-copy" type="button" class="inline-flex items-center gap-1.5 text-xs font-semibold text-white bg-navy-900 hover:bg-navy-700 px-3 py-2 rounded-lg">
+        <i data-lucide="clipboard-copy" class="w-3.5 h-3.5"></i> Copiar datos
+      </button>
+      <button id="lead-print" type="button" class="inline-flex items-center gap-1.5 text-xs font-semibold text-brand-500 border border-brand-200 hover:bg-brand-50 px-3 py-2 rounded-lg">
+        <i data-lucide="printer" class="w-3.5 h-3.5"></i> Imprimir / PDF
+      </button>
+      <a id="lead-wa" href="#" target="_blank" rel="noopener" class="hidden inline-flex items-center gap-1.5 text-xs font-semibold text-white bg-[#25D366] hover:brightness-95 px-3 py-2 rounded-lg">
+        <i data-lucide="message-circle" class="w-3.5 h-3.5"></i> WhatsApp al solicitante
+      </a>
+    </div>
+
     <div id="lead-modal-body" class="space-y-6"></div>
   </div>
 </div>
@@ -727,13 +756,16 @@ https://ejemplo.com/foto2.jpg" class="w-full px-3 py-2.5 rounded-lg border borde
     leadsSyncUrl: "https://script.google.com/macros/s/AKfycbw068olFvmAjftGmSNnDiS_oqhmjceT4l8ZgEn8-vUla7Ju8y55VMJQEj91AIhCVmC_gw/exec",
     currency: "GTQ",
 
+    // Token secreto: debe ser IGUAL al TOKEN del script de Google (Apps Script)
+    leadsToken: "Eabe351341ee3d3c10.",
+
     // ---------------------------------------------------------------
     // AGENTES — usa el MISMO correo con el que cada agente inicia sesión.
     // phone: número de 8 dígitos (para WhatsApp se agrega el 502 automáticamente)
     // ---------------------------------------------------------------
     agents: {
-      "velvetpropiedadesvivanorte@gmail.com": { name: "Velvet González", phone: "3296-8237" },
       "vivanorteinmobiliaria@gmail.com": { name: "César Barrera", phone: "5734-2669" },
+      "velvetpropiedadesvivanorte@gmail.com": { name: "Velvet González", phone: "3296-8237" },
       "Carlosbarrera762003@gmail.com": { name: "Carlos Barrera", phone: "3029-8181" },
       // Usuario del modo demostración (solo si Firebase no está activo)
       "agente": { name: "Agente Demo", phone: "3029-8181" }
@@ -1394,7 +1426,7 @@ https://ejemplo.com/foto2.jpg" class="w-full px-3 py-2.5 rounded-lg border borde
         $$(".panel-tab").forEach(t => t.classList.remove("bg-white/10"));
         tab.classList.add("bg-white/10");
         $$(".panel-section").forEach(s => s.classList.toggle("hidden", s.dataset.panelSection !== target));
-        const titles = { propiedades: "Propiedades", nueva: "Nueva propiedad", leads: "Leads" };
+        const titles = { propiedades: "Propiedades", nueva: "Nueva propiedad", leads: "Solicitudes de renta" };
         $("#panel-title").textContent = titles[target];
       });
     });
@@ -1607,8 +1639,31 @@ ${agent.name ? "👤 Asesor: " + agent.name + "\n" : ""}📞 ${agent.phone}
   }
 
   /* ---------------------------------------------------------
-     LEADS
+     SOLICITUDES DE RENTA (respuestas del Google Form)
   --------------------------------------------------------- */
+  const LEAD_STATUS_LABEL = { nueva: "Nueva", revision: "En revisión", contrato: "Contrato hecho", descartada: "Descartada" };
+  const LEAD_STATUS_CLASS = {
+    nueva: "bg-brand-50 text-brand-600",
+    revision: "bg-amber-100 text-amber-700",
+    contrato: "bg-leaf-50 text-leaf-600",
+    descartada: "bg-gray-100 text-gray-500"
+  };
+  const LEAD_SECTION_TITLE = {
+    general: "Inmueble solicitado",
+    solicitante: "Datos del solicitante",
+    uso: "Uso del inmueble",
+    fiador: "Datos del fiador",
+    obs: "Observaciones"
+  };
+  let currentLeadId = null;
+
+  // Escapa texto: las respuestas del formulario las puede escribir cualquiera
+  function esc(s) {
+    return String(s == null ? "" : s)
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+  }
+
   function normalizeLabel(str) {
     return String(str || "")
       .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
@@ -1623,24 +1678,35 @@ ${agent.name ? "👤 Asesor: " + agent.name + "\n" : ""}📞 ${agent.phone}
     return "";
   }
 
+  // Divide los campos por posición en secciones:
+  // general | solicitante | uso | fiador | observaciones
   function groupLeadFields(fields) {
-    const idxs = [];
-    fields.forEach((f, i) => { if (normalizeLabel(f.label) === "NOMBRE COMPLETO") idxs.push(i); });
-    if (idxs.length >= 2) {
-      return {
-        general: fields.slice(0, idxs[0]),
-        solicitante: fields.slice(idxs[0], idxs[1]),
-        fiador: fields.slice(idxs[1]),
-      };
-    }
-    return { general: fields, solicitante: [], fiador: [] };
+    const n = f => normalizeLabel(f.label);
+    const nameIdx = [];
+    fields.forEach((f, i) => { if (n(f) === "NOMBRE COMPLETO") nameIdx.push(i); });
+    const usoIdx = fields.findIndex(f => n(f).startsWith("USO QUE LE DARA"));
+    const obsIdx = fields.findIndex(f => n(f).startsWith("OBSERVACIONES"));
+
+    const marks = [{ key: "general", start: 0 }];
+    if (nameIdx[0] !== undefined) marks.push({ key: "solicitante", start: nameIdx[0] });
+    if (usoIdx >= 0) marks.push({ key: "uso", start: usoIdx });
+    if (nameIdx[1] !== undefined) marks.push({ key: "fiador", start: nameIdx[1] });
+    if (obsIdx >= 0) marks.push({ key: "obs", start: obsIdx });
+    marks.sort((a, b) => a.start - b.start);
+
+    const out = {};
+    marks.forEach((m, i) => {
+      const end = i + 1 < marks.length ? marks[i + 1].start : fields.length;
+      out[m.key] = fields.slice(m.start, end);
+    });
+    return out;
   }
 
   function fieldRows(fields) {
     return fields.map(f => `
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-1 sm:gap-3 py-1.5 border-b border-gray-50 last:border-0">
-        <p class="text-xs text-gray-400 sm:col-span-1">${f.label}</p>
-        <p class="text-sm text-navy-900 sm:col-span-2 break-words">${f.value || "—"}</p>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-1 sm:gap-3 py-1.5 border-b border-gray-100 last:border-0">
+        <p class="text-xs text-gray-400 sm:col-span-1">${esc(f.label)}</p>
+        <p class="text-sm text-navy-900 sm:col-span-2 break-words whitespace-pre-line">${esc(f.value) || "—"}</p>
       </div>`).join("");
   }
 
@@ -1652,108 +1718,205 @@ ${agent.name ? "👤 Asesor: " + agent.name + "\n" : ""}📞 ${agent.phone}
     const renta = pickField(fields, ["RENTA MENSUAL"]);
     const telefono = pickField(fields, ["TELEFONO"]);
     const tipo = pickField(fields, ["TIPO"]);
+    const st = LEAD_STATUS_LABEL[lead.status] ? lead.status : "nueva";
 
     return `
       <div class="border border-gray-200 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 hover:border-brand-200 transition-colors">
         <div class="flex-1 min-w-0">
           <div class="flex items-center gap-2 flex-wrap">
-            <h4 class="font-semibold text-navy-900 text-sm">${nombre}</h4>
-            ${tipo ? `<span class="text-[11px] px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">${tipo}</span>` : ""}
+            <h4 class="font-semibold text-navy-900 text-sm">${esc(nombre)}</h4>
+            ${tipo ? `<span class="text-[11px] px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">${esc(tipo)}</span>` : ""}
+            <span class="text-[11px] font-semibold px-2 py-0.5 rounded-full ${LEAD_STATUS_CLASS[st]}">${LEAD_STATUS_LABEL[st]}</span>
           </div>
-          <p class="text-xs text-gray-500 mt-1 flex items-center gap-1"><i data-lucide="map-pin" class="w-3.5 h-3.5"></i> ${direccion}</p>
+          <p class="text-xs text-gray-500 mt-1 flex items-center gap-1"><i data-lucide="map-pin" class="w-3.5 h-3.5"></i> ${esc(direccion)}</p>
           <div class="flex flex-wrap gap-x-4 gap-y-1 mt-1.5 text-xs text-gray-500">
-            ${telefono ? `<span class="flex items-center gap-1"><i data-lucide="phone" class="w-3.5 h-3.5"></i>${telefono}</span>` : ""}
-            ${renta ? `<span class="flex items-center gap-1"><i data-lucide="banknote" class="w-3.5 h-3.5"></i>${renta}</span>` : ""}
-            <span class="flex items-center gap-1"><i data-lucide="calendar" class="w-3.5 h-3.5"></i>${fecha}</span>
+            ${telefono ? `<span class="flex items-center gap-1"><i data-lucide="phone" class="w-3.5 h-3.5"></i>${esc(telefono)}</span>` : ""}
+            ${renta ? `<span class="flex items-center gap-1"><i data-lucide="banknote" class="w-3.5 h-3.5"></i>${esc(renta)}</span>` : ""}
+            <span class="flex items-center gap-1"><i data-lucide="calendar" class="w-3.5 h-3.5"></i>${esc(fecha)}</span>
           </div>
         </div>
-        <button data-open-lead="${lead.id}" class="shrink-0 inline-flex items-center gap-1.5 text-xs font-semibold text-brand-500 border border-brand-200 hover:bg-brand-50 px-3 py-1.5 rounded-lg">
+        <button data-open-lead="${esc(lead.id)}" class="shrink-0 inline-flex items-center gap-1.5 text-xs font-semibold text-brand-500 border border-brand-200 hover:bg-brand-50 px-3 py-1.5 rounded-lg">
           Ver detalle <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
         </button>
       </div>`;
   }
 
   function renderLeads() {
-    const q = ($("#leads-search") && $("#leads-search").value || "").toLowerCase();
+    const q = normalizeLabel(($("#leads-search") && $("#leads-search").value) || "");
+    const statusFilter = ($("#leads-status-filter") && $("#leads-status-filter").value) || "";
+    const ts = l => String(pickField(l.fields || [], ["MARCA TEMPORAL"]) || "");
+
     const list = state.leads.filter(l => {
+      if (statusFilter && (l.status || "nueva") !== statusFilter) return false;
       if (!q) return true;
-      return (l.fields || []).some(f => String(f.value || "").toLowerCase().includes(q));
-    });
+      return (l.fields || []).some(f => normalizeLabel(f.value).includes(q));
+    }).sort((a, b) => ts(b).localeCompare(ts(a)));
+
     $("#leads-list").innerHTML = list.map(leadSummaryCard).join("");
     $("#leads-empty").classList.toggle("hidden", list.length > 0);
+    $("#leads-count").textContent = list.length;
     lucide.createIcons();
+  }
+
+  function buildLeadText(lead) {
+    const groups = groupLeadFields(lead.fields || []);
+    return Object.keys(groups).map(key =>
+      "== " + LEAD_SECTION_TITLE[key].toUpperCase() + " ==\n" +
+      groups[key].map(f => f.label + ": " + (f.value || "—")).join("\n")
+    ).join("\n\n");
   }
 
   function openLeadModal(id) {
     const lead = state.leads.find(l => l.id === id);
     if (!lead) return;
-    const groups = groupLeadFields(lead.fields || []);
-    const fecha = pickField(lead.fields || [], ["MARCA TEMPORAL"]);
-    $("#lead-modal-date").textContent = fecha ? "Recibido: " + fecha : "";
+    currentLeadId = id;
+    const fields = lead.fields || [];
+    const groups = groupLeadFields(fields);
+    const fecha = pickField(fields, ["MARCA TEMPORAL"]);
+    const nombre = pickField(fields, ["NOMBRE COMPLETO"]);
 
-    const sections = [
-      ["Inmueble y contacto", groups.general],
-      ["Datos del solicitante", groups.solicitante],
-      ["Datos del fiador", groups.fiador],
-    ].filter(([, fields]) => fields.length > 0);
+    $("#lead-modal-name").textContent = nombre || "Detalle de la solicitud";
+    $("#lead-modal-date").textContent = fecha ? "Recibida: " + fecha : "";
+    $("#lead-status-select").value = LEAD_STATUS_LABEL[lead.status] ? lead.status : "nueva";
 
-    $("#lead-modal-body").innerHTML = sections.map(([title, fields]) => `
+    const phone = pickField(groups.solicitante || fields, ["TELEFONO"]);
+    const digits = String(phone).replace(/\D/g, "");
+    const wa = $("#lead-wa");
+    if (digits.length >= 8) {
+      const msg = `Hola ${nombre || ""}, le escribimos de VIVANORTE sobre su solicitud de arrendamiento.`;
+      wa.href = `https://wa.me/502${digits.slice(-8)}?text=${encodeURIComponent(msg)}`;
+      wa.classList.remove("hidden");
+    } else {
+      wa.classList.add("hidden");
+    }
+
+    $("#lead-modal-body").innerHTML = Object.keys(groups).map(key => `
       <div>
-        <h4 class="text-xs font-semibold text-brand-500 uppercase tracking-wide mb-2">${title}</h4>
-        <div class="bg-gray-50 rounded-xl px-4 py-2">${fieldRows(fields)}</div>
+        <h4 class="text-xs font-semibold text-brand-500 uppercase tracking-wide mb-2">${LEAD_SECTION_TITLE[key]}</h4>
+        <div class="bg-gray-50 rounded-xl px-4 py-2">${fieldRows(groups[key])}</div>
       </div>`).join("");
 
     $("#modal-lead").classList.remove("hidden");
     $("#modal-lead").classList.add("flex");
     document.body.style.overflow = "hidden";
+    lucide.createIcons();
   }
 
   function closeLeadModal() {
     $("#modal-lead").classList.add("hidden");
     $("#modal-lead").classList.remove("flex");
+    currentLeadId = null;
     if (!state.openPropertyId) document.body.style.overflow = "";
   }
 
+  async function setLeadStatus(id, status) {
+    const lead = state.leads.find(l => l.id === id);
+    if (!lead) return;
+    try {
+      if (FIREBASE_ENABLED) {
+        await db.collection("leads").doc(id).set({ status }, { merge: true });
+      } else {
+        lead.status = status;
+        LocalStore.save("vn_leads", state.leads);
+        renderLeads();
+      }
+      showToast("Estado actualizado: " + LEAD_STATUS_LABEL[status], "check-circle-2");
+    } catch (err) {
+      console.error(err);
+      showToast("No se pudo actualizar el estado", "alert-triangle");
+    }
+  }
+
+  function printLead(lead) {
+    const groups = groupLeadFields(lead.fields || []);
+    const nombre = pickField(lead.fields || [], ["NOMBRE COMPLETO"]) || "Solicitud";
+    const fecha = pickField(lead.fields || [], ["MARCA TEMPORAL"]);
+    const w = window.open("", "_blank");
+    if (!w) { showToast("Permite las ventanas emergentes para imprimir", "alert-triangle"); return; }
+    const body = Object.keys(groups).map(key => `
+      <h2>${LEAD_SECTION_TITLE[key]}</h2>
+      <table>${groups[key].map(f => `<tr><td class="l">${esc(f.label)}</td><td>${esc(f.value) || "—"}</td></tr>`).join("")}</table>`).join("");
+    w.document.write(`<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><title>Solicitud - ${esc(nombre)}</title>
+      <style>
+        body{font-family:Arial,sans-serif;color:#1A2733;margin:28px;font-size:12px}
+        h1{font-size:18px;margin:0 0 4px} .d{color:#6B7280;margin-bottom:14px}
+        h2{font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:#1D4E89;border-bottom:2px solid #1D4E89;padding-bottom:3px;margin:18px 0 6px}
+        table{width:100%;border-collapse:collapse} td{padding:4px 6px;border-bottom:1px solid #E5E7EB;vertical-align:top}
+        td.l{width:38%;color:#6B7280}
+      </style></head><body>
+      <h1>VIVANORTE — Solicitud de arrendamiento</h1>
+      <div class="d">${esc(nombre)}${fecha ? " · Recibida: " + esc(fecha) : ""}</div>
+      ${body}</body></html>`);
+    w.document.close();
+    w.focus();
+    setTimeout(() => w.print(), 300);
+  }
+
   function bindLeadModal() {
-    document.addEventListener("click", e => {
+    document.addEventListener("click", async e => {
       const btn = e.target.closest("[data-open-lead]");
       if (btn) openLeadModal(btn.dataset.openLead);
       if (e.target.closest("[data-close-lead-modal]")) closeLeadModal();
+
+      if (e.target.closest("#lead-copy")) {
+        const lead = state.leads.find(l => l.id === currentLeadId);
+        if (!lead) return;
+        try {
+          await navigator.clipboard.writeText(buildLeadText(lead));
+          showToast("Datos copiados al portapapeles", "clipboard-check");
+        } catch (err) {
+          showToast("No se pudo copiar automáticamente", "alert-triangle");
+        }
+      }
+      if (e.target.closest("#lead-print")) {
+        const lead = state.leads.find(l => l.id === currentLeadId);
+        if (lead) printLead(lead);
+      }
     });
-    const search = $("#leads-search");
-    if (search) search.addEventListener("input", renderLeads);
+
+    $("#lead-status-select").addEventListener("change", e => {
+      if (currentLeadId) setLeadStatus(currentLeadId, e.target.value);
+    });
+    $("#leads-search").addEventListener("input", renderLeads);
+    $("#leads-status-filter").addEventListener("change", renderLeads);
   }
 
   function bindLeadsSync() {
     $("#btn-sync-leads").addEventListener("click", async () => {
       if (!CONFIG.leadsSyncUrl) {
-        showToast("Configura CONFIG.leadsSyncUrl en el código para sincronizar en vivo", "info");
+        showToast("Configura CONFIG.leadsSyncUrl para sincronizar en vivo", "info");
         return;
       }
       const btn = $("#btn-sync-leads");
       btn.disabled = true;
       try {
-        const res = await fetch(CONFIG.leadsSyncUrl);
+        const sep = CONFIG.leadsSyncUrl.includes("?") ? "&" : "?";
+        const url = CONFIG.leadsSyncUrl + sep + "token=" + encodeURIComponent(CONFIG.leadsToken || "");
+        const res = await fetch(url);
         if (!res.ok) throw new Error("HTTP " + res.status);
         const data = await res.json();
-        if (!Array.isArray(data)) throw new Error("Formato inesperado");
+        if (!Array.isArray(data)) throw new Error(data && data.error ? data.error : "Formato inesperado");
 
         if (FIREBASE_ENABLED) {
-          const batch = db.batch();
-          data.forEach(lead => {
-            const docId = sanitizeId(lead.id || JSON.stringify(lead.fields).slice(0, 100));
-            batch.set(db.collection("leads").doc(docId), { fields: lead.fields }, { merge: true });
-          });
-          await batch.commit();
+          // Lotes de 400 (Firestore permite máx. 500 operaciones por lote)
+          for (let i = 0; i < data.length; i += 400) {
+            const batch = db.batch();
+            data.slice(i, i + 400).forEach(lead => {
+              const docId = sanitizeId(lead.id || JSON.stringify(lead.fields).slice(0, 100));
+              batch.set(db.collection("leads").doc(docId), { fields: lead.fields }, { merge: true });
+            });
+            await batch.commit();
+          }
         } else {
-          state.leads = data;
+          const old = new Map(state.leads.map(l => [l.id, l]));
+          state.leads = data.map(l => ({ ...l, id: sanitizeId(l.id), status: (old.get(sanitizeId(l.id)) || {}).status }));
           LocalStore.save("vn_leads", state.leads);
           renderLeads();
         }
-        showToast("Solicitudes sincronizadas", "refresh-cw");
+        showToast("Solicitudes sincronizadas (" + data.length + ")", "refresh-cw");
       } catch (err) {
         console.error(err);
-        showToast("No se pudo leer el formulario. Revisa que el Web App esté publicado con acceso 'Cualquier usuario'.", "alert-triangle");
+        showToast("No se pudo leer el formulario. Revisa el token y que el Web App tenga acceso 'Cualquier usuario'.", "alert-triangle");
       }
       btn.disabled = false;
     });
